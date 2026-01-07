@@ -168,6 +168,16 @@ class IndustryAgent:
                     args = json.loads(arguments) if arguments else {}
                 else:
                     args = arguments if arguments else {}
+                
+                # 参数自适应修正：处理 deep_analysis 工具参数名不一致问题
+                if tool_name == "deep_analysis":
+                    if "industry_data" in args and "data" not in args:
+                        print(f"DEBUG: Auto-correcting deep_analysis param: industry_data -> data")
+                        args = {"data": args["industry_data"]}
+                    elif "annual_output" in args and "data" not in args:
+                        # 如果模型直接传了 annual_output 没包在 data 里
+                        print(f"DEBUG: Auto-wrapping deep_analysis param: annual_output -> data")
+                        args = {"data": args}
                     
                 result = await target_server.call_tool(tool_name, args)
                 content_list = []
@@ -186,7 +196,7 @@ class IndustryAgent:
                 # 针对 industry_query 的特殊增强提示，解决 Agent 拿到数据后不进行深度分析的问题
                 system_hint = ""
                 if server_name == "industry_query":
-                    system_hint = "\n\n【系统强制指令】\n1. 立即检查 'annual_output' 数值。\n2. 逻辑分支判断：\n   - 若数值 > 1000：**CRITICAL**：必须立即调用 'deep_analysis' 工具！\n   **不要**输出“接下来我将...”、“稍候...”等文字。\n   **直接**输出工具调用 JSON。\n   - 若数值 <= 1000：仅输出建议。"
+                    system_hint = "\n\n【系统强制指令】\n1. 立即检查 'annual_output' 数值。\n2. 逻辑分支判断：\n   - 若数值 > 1000：**CRITICAL**：必须立即调用 'deep_analysis' 工具！\n   - 参数规范：`arguments={'data': {'annual_output': [具体产值]}}`（注意必须包含 'data' 键）。\n   **不要**输出“接下来我将...”、“稍候...”等文字。\n   **直接**输出工具调用 JSON。\n   - 若数值 <= 1000：仅输出建议。"
 
                 return f"【工具调用成功】从 {server_name} 获取到的原始数据如下，请根据手册逻辑进行判断处理：\n{output}{system_hint}"
             except Exception as e:
