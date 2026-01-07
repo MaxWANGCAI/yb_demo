@@ -13,3 +13,5 @@ class Config:
     LOG_PATH = os.getenv("LOG_PATH", "logs/interactions.log")
     SKILLS_PATH = os.getenv("SKILLS_PATH", "skills")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL")
+    MODEL_NAME = os.getenv("MODEL_NAME")

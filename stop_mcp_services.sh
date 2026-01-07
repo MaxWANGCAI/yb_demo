@@ -2,13 +2,13 @@
 
 echo "Stopping MCP Servers..."
 
-if [ -f logs/tourism_server.pid ]; then
-    pid=$(cat logs/tourism_server.pid)
+if [ -f logs/industry_server.pid ]; then
+    pid=$(cat logs/industry_server.pid)
     kill $pid
-    rm logs/tourism_server.pid
-    echo "Stopped Tourism Server (PID $pid)"
+    rm logs/industry_server.pid
+    echo "Stopped Industry Server (PID $pid)"
 else
-    echo "Tourism Server PID file not found."
+    echo "Industry Server PID file not found."
 fi
 
 if [ -f logs/deep_analysis_server.pid ]; then

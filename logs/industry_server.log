@@ -8,10 +8,10 @@
 │                                FastMCP 2.14.1                                │
 │                                                                              │
 │                                                                              │
-│                   🖥  Server name: DeepAnalysis                               │
+│                   🖥  Server name: industry_query_server                      │
 │                                                                              │
 │                   📦 Transport:   SSE                                        │
-│                   🔗 Server URL:  http://0.0.0.0:8002/sse                    │
+│                   🔗 Server URL:  http://0.0.0.0:8001/sse                    │
 │                                                                              │
 │                   📚 Docs:        https://gofastmcp.com                      │
 │                   🚀 Hosting:     https://fastmcp.cloud                      │
@@ -19,16 +19,21 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 
-[01/07/26 11:19:05] INFO     Starting MCP server 'DeepAnalysis'   server.py:2618
-                             with transport 'sse' on                            
-                             http://0.0.0.0:8002/sse                            
-INFO:     Started server process [35666]
+[01/07/26 11:19:05] INFO     Starting MCP server                  server.py:2618
+                             'industry_query_server' with                       
+                             transport 'sse' on                                 
+                             http://0.0.0.0:8001/sse                            
+INFO:     Started server process [35665]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
-INFO:     127.0.0.1:59845 - "GET /sse HTTP/1.1" 200 OK
-INFO:     127.0.0.1:59847 - "POST /messages/?session_id=6e953257ea2a4ca694be9cf2d4309e59 HTTP/1.1" 202 Accepted
-INFO:     127.0.0.1:59847 - "POST /messages/?session_id=6e953257ea2a4ca694be9cf2d4309e59 HTTP/1.1" 202 Accepted
-INFO:     127.0.0.1:59884 - "GET /sse HTTP/1.1" 200 OK
-INFO:     127.0.0.1:59885 - "POST /messages/?session_id=e061a5a359d547769ad8bb6f791151cd HTTP/1.1" 202 Accepted
-INFO:     127.0.0.1:59885 - "POST /messages/?session_id=e061a5a359d547769ad8bb6f791151cd HTTP/1.1" 202 Accepted
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59843 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59844 - "POST /messages/?session_id=90d064aab78a4caba146bd5671399e2e HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59844 - "POST /messages/?session_id=90d064aab78a4caba146bd5671399e2e HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59844 - "POST /messages/?session_id=90d064aab78a4caba146bd5671399e2e HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59844 - "POST /messages/?session_id=90d064aab78a4caba146bd5671399e2e HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59882 - "GET /sse HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59883 - "POST /messages/?session_id=a737b8d79c2049a9bb332e3e520bda00 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59883 - "POST /messages/?session_id=a737b8d79c2049a9bb332e3e520bda00 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59883 - "POST /messages/?session_id=a737b8d79c2049a9bb332e3e520bda00 HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59883 - "POST /messages/?session_id=a737b8d79c2049a9bb332e3e520bda00 HTTP/1.1" 202 Accepted
