@@ -13,6 +13,18 @@
 <location>project</location>
 </skill>
 
+
+<skill>
+<name>local_skill_7674</name>
+<description>这是一个用于智能推荐系统的技能，提升用户体验。 它将写入文件系统并使用openskills CLI同步。</description>
+<location>project</location>
+</skill>
+
+<skill>
+<name>local_skill_5859</name>
+<description>这是一个用于智能推荐系统的技能，提升用户体验。 它将写入文件系统并使用openskills CLI同步。</description>
+<location>project</location>
+</skill>
 </available_skills>
 
 </skills_system>

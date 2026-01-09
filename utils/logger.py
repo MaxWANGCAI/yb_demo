@@ -23,23 +23,21 @@ class InteractionLogger:
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
         
-        # Clean up content for single line log if it's too long, or keep multiline if needed
-        # For readability, we might want to keep newlines but indent them
-        clean_content = str(content)
+        clean_content = str(content).strip()
         
         # Construct the log content (excluding timestamp for deduplication check)
         log_content_signature = f"[{sender} -> {receiver}] ({msg_type}): {clean_content}"
-        log_entry = f"[{timestamp}] {log_content_signature}\n"
         
-        # Deduplication logic: 
-        # If the content is identical to the last log and happened within 1 second, skip it.
-        if (InteractionLogger._last_log_entry == log_content_signature and 
-            InteractionLogger._last_log_time and 
-            (now - InteractionLogger._last_log_time).total_seconds() < 1.0):
+        # Enhanced Deduplication logic: 
+        # 1. If the content is identical to the last log entry (regardless of time), skip it.
+        # This prevents the exact same initialization sequence from flooding the logs.
+        if InteractionLogger._last_log_entry == log_content_signature:
             return
 
         InteractionLogger._last_log_entry = log_content_signature
         InteractionLogger._last_log_time = now
+        
+        log_entry = f"[{timestamp}] {log_content_signature}\n"
         
         try:
             with open(self.log_path, "a", encoding="utf-8") as f:

@@ -13,6 +13,28 @@ from utils.logger import InteractionLogger
 # Environment detection
 IS_STREAMLIT_CLOUD = os.getenv("STREAMLIT_CLOUD", "false").lower() == "true"
 
+@st.cache_resource
+def clear_logs_on_startup():
+    """Clears all log files in the logs directory on startup."""
+    log_dir = os.path.join(os.getcwd(), "logs")
+    if os.path.exists(log_dir):
+        import shutil
+        for filename in os.listdir(log_dir):
+            file_path = os.path.join(log_dir, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+    else:
+        os.makedirs(log_dir)
+    return True
+
+# Clear logs once per application run
+clear_logs_on_startup()
+
 # Set page config
 st.set_page_config(
     page_title="产业发展分析智能体",
@@ -66,6 +88,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+@st.cache_data
 def _generate_skills_prompt(existing_agents_md_path, dynamic_skills_dict, is_cloud_env):
     """Generates the combined skills system prompt from AGENTS.md and dynamic skills."""
     combined_skills_xml = ""
@@ -102,11 +125,20 @@ def _generate_skills_prompt(existing_agents_md_path, dynamic_skills_dict, is_clo
 </available_skills>"""
 
 @st.cache_resource
+def log_once(sender, receiver, content, msg_type="info"):
+    """Logs a message only once per application process lifetime."""
+    config = Config()
+    logger = InteractionLogger(config.LOG_PATH)
+    logger.log_interaction(sender, receiver, content, msg_type)
+    return True
+
+@st.cache_resource
 def ensure_mcp_servers_running():
     """Starts the MCP servers using subprocess, ensuring global singleton execution."""
     import sys
     import time
     config = Config()
+    # Using local logger for process-level events
     logger = InteractionLogger(config.LOG_PATH)
     cwd = os.getcwd()
     
@@ -154,7 +186,7 @@ def ensure_mcp_servers_running():
     ]:
         # 1. 检查端口是否已被占用
         if is_port_in_use(port):
-            logger.log_interaction("system", "mcp_server", "info", f"{name} MCP Server already running on port {port}. Skipping startup.")
+            log_once("system", "mcp_server", f"{name} MCP Server already running on port {port}. Skipping startup.", "info")
             continue
 
         # 2. 如果未运行，尝试新启
@@ -179,9 +211,9 @@ def ensure_mcp_servers_running():
                     break
             
             if success:
-                logger.log_interaction("system", "mcp_server", "started", f"{name} MCP Server started on port {port}")
+                log_once("system", "mcp_server", f"{name} MCP Server started on port {port}", "started")
             else:
-                logger.log_interaction("system", "mcp_server", "warning", f"{name} MCP Server timeout (5s) on port {port}. Please check logs/mcp_startup.log")
+                log_once("system", "mcp_server", f"{name} MCP Server timeout (5s) on port {port}. Please check logs/mcp_startup.log", "warning")
         except Exception as e:
             logger.log_interaction("system", "mcp_server", "error", f"Failed to launch {name} MCP Server: {e}")
     
@@ -208,7 +240,8 @@ if "agent" not in st.session_state:
         )
         st.session_state.agent = IndustryAgent(
             initial_skills_system_prompt=initial_combined_skills_prompt,
-            dynamic_skills_dict=st.session_state.dynamic_skills if IS_STREAMLIT_CLOUD else {}
+            dynamic_skills_dict=st.session_state.dynamic_skills if IS_STREAMLIT_CLOUD else {},
+            auto_reset=True
         )
 
 if "logger" not in st.session_state:
